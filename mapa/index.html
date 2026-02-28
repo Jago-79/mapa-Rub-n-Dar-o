@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa Rubén Darío</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <style>
+        /* --- BASE Y TIPOGRAFÍA --- */
+        body {
+            margin: 0;
+            font-family: 'Poppins', Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- HERO (ENCABEZADO ADAPTABLE) --- */
+        .hero {
+            position: relative;
+            min-height: 140px;
+            background-image: url("img/lago.jpg");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .hero-text {
+            text-align: center;
+            flex: 1;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            margin: 2px 0 0 0;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .icono-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            min-width: 70px;
+        }
+
+        .icono-hero img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            object-fit: cover;
+            transition: transform 0.2s;
+        }
+
+        .icono-hero span {
+            font-size: 9px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 5px;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        #contenedor {
+            display: flex;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #map {
+            flex: 1;
+            z-index: 1;
+        }
+
+        /* --- PANEL LATERAL / INFERIOR --- */
+        #panel {
+            width: 320px;
+            background: #ffffff;
+            border-right: 5px solid #0a6a3c;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Botón para abrir/cerrar en móvil */
+        #togglePanel {
+            display: none;
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0a6a3c;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px 10px 0 0;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+        }
+
+        #panel h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #0a6a3c;
+            font-size: 1.4rem;
+        }
+
+        .boton {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            border: none;
+            background: #0a6a3c;
+            color: white;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .galeria img { width: 100%; border-radius: 8px; margin-top: 10px; }
+
+        /* --- MODALES (BIO Y TIMELINE) --- */
+        #bioDario, #timelineDario {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 85%;
+            max-width: 450px;
+            max-height: 70vh;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10001;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .activo { opacity: 1 !important; transform: translate(-50%, -50%) scale(1) !important; pointer-events: auto !important; }
+
+        /* --- RESPONSIVE MÓVIL --- */
+        @media (max-width: 768px) {
+            .hero { min-height: 110px; }
+            .hero-content { gap: 5px; }
+            .hero h1 { font-size: 1rem; }
+            .hero p { display: none; }
+            .icono-hero img { width: 40px; height: 40px; }
+            .icono-hero span { font-size: 8px; }
+
+            #panel {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 50vh;
+                border-right: none;
+                border-top: 5px solid #0a6a3c;
+                transform: translateY(100%); /* Escondido por defecto */
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+            }
+
+            #panel.abierto {
+                transform: translateY(0); /* Se muestra */
+            }
+
+            #togglePanel {
+                display: block;
+            }
+
+            #map {
+                height: 100%;
+                width: 100%;
+            }
+        }
+
+        /* Estilos Linea de Tiempo */
+        .linea { position: relative; padding-left: 30px; border-left: 2px solid #0a6a3c; margin-left: 10px; }
+        .evento { margin-bottom: 20px; cursor: pointer; }
+        .contenido { background: #f0f0f0; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+        .contenido img { width: 50px; height: 50px; border-radius: 5px; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+<header class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="icono-hero" id="btnTimeline">
+            <img src="img/bandera.jpg" alt="Viajes">
+            <span>Viajes</span>
+        </div>
+
+        <div class="hero-text">
+            <h1>Rubén Darío</h1>
+            <p>Recorrido Poético Mundial</p>
+        </div>
+
+        <div class="icono-hero" id="btnBio">
+            <img src="img/rubendario.jpg" alt="Biografía">
+            <span>Biografía</span>
+        </div>
+    </div>
+</header>
+
+<div id="contenedor">
+    <div id="panel">
+        <button id="togglePanel">▲ VIAJAR (PAÍSES)</button>
+        <h2>Explorar Destinos</h2>
+        <div id="menu"></div>
+        <div id="detalle"></div>
+    </div>
+    
+    <div id="map"></div>
+</div>
+
+<div id="bioDario">
+    <h3 style="color:#0a6a3c">Rubén Darío</h3>
+    <p>Máximo representante del modernismo literario. Su obra renovó la lengua española para siempre.</p>
+    <button class="boton" onclick="cerrarModales()">Cerrar</button>
+</div>
+
+<div id="timelineDario">
+    <h3>Cronología de Viajes</h3>
+    <div class="linea">
+        <div class="evento" data-lat="12.8654" data-lng="-85.2072">
+            <div class="contenido"><img src="img/nicaragua.jpg"> <div><b>1867</b><p>Nace en Nicaragua.</p></div></div>
+        </div>
+        <div class="evento" data-lat="-33.4489" data-lng="-70.6693">
+            <div class="contenido"><img src="img/chile.jpg"> <div><b>1886</b><p>Chile: Publica "Azul...".</p></div></div>
+        </div>
+        <div class="evento" data-lat="40.4168" data-lng="-3.7038">
+            <div class="contenido"><img src="img/espana.webp"> <div><b>1898</b><p>España: Corresponsal.</p></div></div>
+        </div>
+        <div class="evento" data-lat="48.8566" data-lng="2.3522">
+            <div class="contenido"><img src="img/francia.jpg"> <div><b>1900</b><p>París: Época bohemia.</p></div></div>
+        </div>
+    </div>
+    <button class="boton" onclick="cerrarModales()">Cerrar</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    /* --- LÓGICA DE INTERFAZ --- */
+    const panel = document.getElementById("panel");
+    const toggleBtn = document.getElementById("togglePanel");
+    const bioModal = document.getElementById("bioDario");
+    const timeModal = document.getElementById("timelineDario");
+
+    // Abrir/Cerrar Panel en móvil
+    toggleBtn.addEventListener("click", () => {
+        panel.classList.toggle("abierto");
+        toggleBtn.textContent = panel.classList.contains("abierto") ? "▼ CERRAR" : "▲ VIAJAR (PAÍSES)";
+    });
+
+    // Modales
+    document.getElementById("btnBio").onclick = (e) => { e.stopPropagation(); cerrarModales(); bioModal.classList.add("activo"); };
+    document.getElementById("btnTimeline").onclick = (e) => { e.stopPropagation(); cerrarModales(); timeModal.classList.add("activo"); };
+
+    function cerrarModales() {
+        bioModal.classList.remove("activo");
+        timeModal.classList.remove("activo");
+    }
+
+    document.addEventListener("click", (e) => {
+        if (!bioModal.contains(e.target) && !timeModal.contains(e.target)) cerrarModales();
+    });
+
+    /* --- MAPA Y DATOS --- */
+    const map = L.map('map', { zoomControl: false }).setView([12.8, -85.0], 6);
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    const icono = L.icon({
+        iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png", // Icono genérico por si falla el local
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+    });
+
+    // Copia aquí tu array de "lugares" (el mismo que ya tenías)
+    const lugares = [
+        { nombre:"Casa Museo – León", pais:"Nicaragua", lat:12.4356, lng:-86.8786, descripcion:"Donde vivió el poeta.", imagen:"img/fpcasaleon.jpg" },
+        { nombre:"Plaza Darío – B. Aires", pais:"Argentina", lat:-34.57435, lng:-58.395107, descripcion:"Homenaje en Argentina.", imagen:"img/visareplaza.jpg" },
+        { nombre:"Monumento – Madrid", pais:"España", lat:40.4169, lng:-3.7036, descripcion:"Residencia en España.", imagen:"img/monumentoespana.webp" },
+        { nombre:"Placa Azul – Valparaíso", pais:"Chile", lat:-33.050834, lng:-71.597313, descripcion:"Donde nació el Modernismo.", imagen:"img/plaval.jpg" },
+        { nombre:"Sculpture – Miami", pais:"Estados Unidos", lat:25.769904, lng:-80.356663, descripcion:"Donada por Nicaragua.", imagen:"img/miami.jpg" },
+        { nombre:"Lápida – París", pais:"Francia", lat:48.904108, lng:2.577443, descripcion:"Su estancia en Francia.", imagen:"img/placaparis.jpg" }
+    ];
+
+    // Cargar Marcadores
+    lugares.forEach(l => {
+        l.marker = L.marker([l.lat, l.lng], {icon: icono}).addTo(map)
+            .bindPopup(`<b>${l.nombre}</b><br>${l.pais}`);
+    });
+
+    // Menú de Países
+    const menuDiv = document.getElementById("menu");
+    function mostrarPaises() {
+        menuDiv.innerHTML = "";
+        const paises = [...new Set(lugares.map(l => l.pais))];
+        paises.forEach(pais => {
+            const btn = document.createElement("button");
+            btn.className = "boton";
+            btn.textContent = pais;
+            btn.onclick = () => mostrarSitios(pais);
+            menuDiv.appendChild(btn);
+        });
+    }
+
+    function mostrarSitios(pais) {
+        menuDiv.innerHTML = `<button class="boton" style="background:#666" onclick="mostrarPaises()">⬅ Volver</button>`;
+        lugares.filter(l => l.pais === pais).forEach(l => {
+            const btn = document.createElement("button");
+            btn.className = "boton";
+            btn.textContent = l.nombre;
+            btn.onclick = () => {
+                map.flyTo([l.lat, l.lng], 14);
+                l.marker.openPopup();
+                if(window.innerWidth < 768) {
+                    panel.classList.remove("abierto");
+                    toggleBtn.textContent = "▲ VIAJAR (PAÍSES)";
+                }
+            };
+            menuDiv.appendChild(btn);
+        });
+    }
+
+    // Eventos Timeline
+    document.querySelectorAll(".evento").forEach(ev => {
+        ev.onclick = () => {
+            const lat = parseFloat(ev.dataset.lat);
+            const lng = parseFloat(ev.dataset.lng);
+            map.flyTo([lat, lng], 5);
+            cerrarModales();
+        };
+    });
+
+    mostrarPaises();
+</script>
+</body>
+</html>
