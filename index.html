@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Biblioteca Rubén Darío</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+:root{
+  --bg:#0f172a;
+  --card:#111827;
+  --accent:#38bdf8;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui, Arial, sans-serif;
+}
+
+body{
+  background:linear-gradient(180deg,#020617,#0f172a);
+  color:var(--text);
+}
+
+/* ================= HEADER ================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  backdrop-filter: blur(10px);
+  background:rgba(2,6,23,.7);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+header.scrolled{
+  background:rgba(2,6,23,.95);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.nav{
+  max-width:1300px;
+  margin:auto;
+  padding:15px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-weight:800;
+  letter-spacing:2px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo img{
+  height:55px;
+  width:auto;
+}
+
+.menu{
+  background:rgba(2,6,23,.85);
+  backdrop-filter:blur(10px);
+}
+
+.menu a{
+  margin-left:40px;
+  text-decoration:none;
+  color:var(--text);
+  font-size:.95rem;
+}
+
+.hamburguesa{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+
+.hamburguesa span{
+  width:25px;
+  height:3px;
+  background:white;
+  transition:.3s;
+}
+
+.hamburguesa.activo span:nth-child(1){
+  transform:rotate(45deg) translate(5px,5px);
+}
+
+.hamburguesa.activo span:nth-child(2){
+  opacity:0;
+}
+
+.hamburguesa.activo span:nth-child(3){
+  transform:rotate(-45deg) translate(6px,-6px);
+}
+
+.menu a:hover{
+  color:var(--accent);
+}
+
+/* ================= HERO ================= */
+
+.hero{
+  max-width:1300px;
+  margin:auto;
+  padding:90px 20px 70px;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:40px;
+  align-items:center;
+}
+
+.hero h1{
+  font-size:3rem;
+  line-height:1.1;
+}
+
+.hero span{
+  color:var(--accent);
+}
+
+.hero p{
+  margin-top:15px;
+  color:var(--muted);
+  max-width:500px;
+}
+
+/* ================= SECCIONES ================= */
+
+section{
+  max-width:1300px;
+  margin:auto;
+  padding:70px 20px;
+}
+
+section h2{
+  font-size:2rem;
+  margin-bottom:20px;
+}
+
+/* ================= LIBROS ================= */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:100px;
+}
+
+.book{
+  background:var(--card);
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.05);
+  transition:.3s;
+  position: relative;
+}
+
+.book:hover{
+  transform:translateY(-6px);
+  box-shadow:0 15px 40px rgba(0,0,0,.4);
+}
+
+/* resumen */
+
+.obra-resumen{
+  padding:25px;
+  cursor:pointer;
+}
+
+.obra-resumen img{
+  width:100%;
+  height:140px;
+  object-fit:cover;
+  border-radius:10px;
+  display:block;
+  margin-bottom:8px;
+}
+
+.book h3{
+  margin-bottom:10px;
+}
+
+/* detalle */
+
+.obra-detalle{
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% - 18px);
+  z-index:20;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .4s ease, padding .3s ease;
+  background:#0f172a;
+  padding:0 25px;
+  border-radius:0 0 18px 18px;
+}
+
+.book.abierta .obra-detalle{
+  max-height:700px;
+  padding:20px 25px 25px;
+}
+
+.img-grande{
+  width:100%;
+  max-height:320px;
+  object-fit:contain;
+  border-radius:8px;
+  margin-bottom:10px;
+}
+
+.info{
+  color:#e5e7eb;
+  font-size:14px;
+}
+
+.info p{
+  color:var(--muted);
+}
+
+.book a{
+  display:inline-block;
+  margin-top:15px;
+  padding:10px 16px;
+  border-radius:12px;
+  background:var(--accent);
+  color:#020617;
+  font-weight:700;
+  text-decoration:none;
+  font-size:.9rem;
+}
+
+/* ================= BIO ================= */
+
+.bio{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+}
+
+.bio p{
+  color:var(--muted);
+  line-height:1.7;
+}
+
+/* ================= MAPA ================= */
+
+.mapa-wrapper{
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  max-height: 600px;
+  min-height: 320px;
+  border-radius:18px;
+  overflow:hidden;
+  background:#000;
+}
+
+.mapa-wrapper iframe{
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* botón fullscreen */
+
+.btn-fullscreen{
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(15,23,42,0.75);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.btn-fullscreen svg{
+  width: 22px;
+  height: 22px;
+  fill: white;
+}
+
+.btn-fullscreen:hover{
+  background: rgba(56,189,248,0.85);
+}
+
+.reveal{
+  opacity:0;
+  transform:translateY(40px);
+  transition:all .6s ease;
+}
+
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+  border-top:1px solid rgba(255,255,255,.05);
+  padding:25px;
+  text-align:center;
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+/* ================= RESPONSIVE TABLET ================= */
+
+@media(max-width:900px){
+
+  .hero{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+
+  .bio{
+    grid-template-columns:1fr;
+  }
+
+  .hamburguesa{
+    display:flex;
+  }
+
+  .menu{
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  text-align:center;
+  gap:15px;
+
+  background:rgba(2,6,23,.95);
+  backdrop-filter:blur(10px);
+
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .4s ease;
+
+  padding:0;
+}
+
+  .menu a{
+  margin-left:0;
+  padding:12px;
+}
+
+  .menu.activo{
+    max-height:300px;
+    display:flex;
+  }
+
+  .nav{
+  align-items:center;
+  flex-direction:row;
+  position:relative;
+}
+}
+
+/* ================= PARCHE REAL PARA TELÉFONO ================= */
+
+@media (max-width:600px){
+
+  .nav{
+    flex-direction:row;
+    gap:10px;
+  }
+
+  .logo{
+    justify-content:center;
+  }
+
+  .hero{
+    padding:50px 15px 40px;
+  }
+
+  .hero h1{
+    font-size:2rem;
+  }
+
+  .hero p{
+    max-width:100%;
+    font-size:.95rem;
+  }
+
+  section{
+    padding:45px 15px;
+  }
+
+  section h2{
+    font-size:1.5rem;
+    text-align:center;
+  }
+
+  /* el hueco absurdo desaparece */
+  .grid{
+    gap:25px;
+  }
+
+  .book{
+    border-radius:14px;
+  }
+
+  /* el detalle ya no flota raro en móvil */
+  .obra-detalle{
+    position:static;
+    max-height:none;
+    padding:15px 20px 20px;
+    border-radius:0 0 14px 14px;
+    display:none;
+  }
+
+  .book.abierta .obra-detalle{
+    display:block;
+  }
+
+  .obra-resumen{
+    padding:18px;
+  }
+
+  .img-grande{
+    max-height:220px;
+  }
+
+  .bio{
+    gap:20px;
+  }
+
+  .bio p{
+    font-size:.95rem;
+  }
+
+  .mapa-wrapper{
+    height:60vh;
+    min-height:260px;
+    border-radius:14px;
+  }
+
+  .btn-fullscreen{
+    width:36px;
+    height:36px;
+  }
+
+  footer{
+    font-size:.8rem;
+  }
+
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <img src="img/logo.png" alt="Logo Biblioteca Dariana">
+      <span>Biblioteca Dariana</span>
+    </div>
+
+    <button class="hamburguesa" id="btnMenu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+    
+    <nav class="menu">
+      <a href="#inicio">Inicio</a>
+      <a href="#obras">Obras</a>
+      <a href="#biografia">Biografía</a>
+      <a href="#mapa">Mapa</a>
+    </nav>
+  </div>
+</header>
+
+<div id="inicio" class="hero reveal">
+
+  <div>
+    <h1>Bienvenido a la<br><span>Biblioteca Dariana</span></h1>
+    <p>
+      Entre libros y silencios, la poesía de Darío sigue guiando a quienes buscan entender la historia, la cultura y el espíritu de Nicaragua.
+    </p>
+  </div>
+
+</div>
+
+<section id="obras" class="reveal">
+
+<h2>Obras</h2>
+
+<div class="grid">
+
+  <div class="book">
+    <div class="obra-resumen">
+      <img src="img/cantos.jpg" alt="">
+      <h3>Cantos de vida y esperanza</h3>
+    </div>
+    <div class="obra-detalle">
+      <img src="img/cantos.jpg" class="img-grande" alt="">
+      <div class="info">
+        <h4>Cantos de vida y esperanza</h4>
+        <p>Obra clave del modernismo, marcada por la reflexión y la madurez poética.</p>
+        <a href="https://4f1af202-01c0-4814-baa6-02d1c630badb.filesusr.com/ugd/8d45e6_8e17a5078e6742eaa9e6cf92372d6790.pdf" target="_blank">Descargar PDF</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="obra-resumen">
+      <img src="img/prosas.jpg" alt="">
+      <h3>Prosas profanas</h3>
+    </div>
+    <div class="obra-detalle">
+      <img src="img/prosas.jpg" class="img-grande" alt="">
+      <div class="info">
+        <h4>Prosas profanas</h4>
+        <p>Libro fundamental que consolidó el estilo modernista en lengua española.</p>
+        <a href="https://4f1af202-01c0-4814-baa6-02d1c630badb.filesusr.com/ugd/8d45e6_5d944baff0df456398af532024a0776f.pdf" target="_blank">Descargar PDF</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="book">
+    <div class="obra-resumen">
+      <img src="img/azul.jpg" alt="">
+      <h3>Azul…</h3>
+    </div>
+    <div class="obra-detalle">
+      <img src="img/azul.jpg" class="img-grande" alt="">
+      <div class="info">
+        <h4>Azul…</h4>
+        <p>Publicado en 1888. Obra fundamental del modernismo hispanoamericano.</p>
+        <a href="https://4f1af202-01c0-4814-baa6-02d1c630badb.filesusr.com/ugd/8d45e6_8e1874bdbc214e3f9d59b6c6c1de1414.pdf" target="_blank">Descargar PDF</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<section id="biografia" class="reveal">
+
+<h2>Rubén Darío</h2>
+
+<div class="bio">
+  <p>
+    Félix Rubén García Sarmiento nació en 1867 en Metapa, hoy Ciudad Darío,
+    Nicaragua. Desde temprana edad mostró un talento excepcional para la poesía,
+    lo que le permitió destacar rápidamente en el ámbito literario.
+  </p>
+  <p>
+    Es considerado el máximo representante del modernismo. Su obra renovó el
+    lenguaje poético en español mediante una estética marcada por la musicalidad,
+    el simbolismo y la perfección formal.
+  </p>
+</div>
+
+</section>
+
+<section id="mapa" class="mapa reveal">
+
+  <h2>Mapa cultural</h2>
+
+  <div class="mapa-wrapper">
+
+    <iframe
+      id="iframeMapa"
+      src="mapa/"
+      allowfullscreen
+      loading="lazy">
+    </iframe>
+
+    <button id="btnFullscreen" class="btn-fullscreen" title="Pantalla completa">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H5v5zm10 7h-3v2h5v-5h-2v3zm-3-12v2h3v3h2V5h-5z"/>
+      </svg>
+    </button>
+
+  </div>
+
+</section>
+
+<footer>
+© 2026 · Biblioteca Dariana · Proyecto académico · UNAN Managua
+</footer>
+
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
+  link.addEventListener("click",e=>{
+    e.preventDefault();
+    document.querySelector(link.getAttribute("href"))
+      .scrollIntoView({behavior:"smooth"});
+  });
+});
+</script>
+
+<script>
+const btn = document.getElementById("btnFullscreen");
+const iframe = document.getElementById("iframeMapa");
+
+btn.addEventListener("click", () => {
+
+  if (iframe.requestFullscreen) {
+    iframe.requestFullscreen();
+  } else if (iframe.webkitRequestFullscreen) {
+    iframe.webkitRequestFullscreen();
+  } else if (iframe.msRequestFullscreen) {
+    iframe.msRequestFullscreen();
+  }
+
+});
+</script>
+
+<script>
+document.querySelectorAll(".book").forEach(card => {
+
+  card.addEventListener("click", e => {
+
+    if (e.target.closest("a")) return;
+    if (!e.target.closest(".obra-resumen")) return;
+
+    document.querySelectorAll(".book").forEach(b=>{
+      if(b !== card) b.classList.remove("abierta");
+    });
+
+    card.classList.toggle("abierta");
+
+  });
+});
+</script>
+
+<script>
+document.addEventListener("click", e => {
+
+  if (!e.target.closest(".book")) {
+    document.querySelectorAll(".book.abierta")
+      .forEach(b => b.classList.remove("abierta"));
+  }
+
+});
+</script>
+
+<script>
+const btnMenu = document.getElementById("btnMenu");
+const menu = document.querySelector(".menu");
+
+btnMenu.addEventListener("click", () => {
+
+  menu.classList.toggle("activo");
+  btnMenu.classList.toggle("activo");
+
+});
+
+document.querySelectorAll(".menu a").forEach(link => {
+
+  link.addEventListener("click", () => {
+
+    menu.classList.remove("activo");
+
+  });
+
+});
+</script>
+
+<script>
+
+const header = document.querySelector("header");
+
+window.addEventListener("scroll", () => {
+
+  if(window.scrollY > 40){
+    header.classList.add("scrolled");
+  }else{
+    header.classList.remove("scrolled");
+  }
+
+});
+
+</script>
+
+<script>
+
+const elementos = document.querySelectorAll(".reveal");
+
+function mostrarElementos(){
+
+  const alturaVentana = window.innerHeight;
+
+  elementos.forEach(el => {
+
+    const distancia = el.getBoundingClientRect().top;
+
+    if(distancia < alturaVentana - 80){
+      el.classList.add("visible");
+    }
+
+  });
+
+}
+
+window.addEventListener("scroll", mostrarElementos);
+
+mostrarElementos();
+
+</script>
+
+</body>
+</html>
