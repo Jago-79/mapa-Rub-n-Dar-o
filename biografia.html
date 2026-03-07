@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Biografía de Rubén Darío</title>
+
+<style>
+
+.hamburguesa{
+display:none;
+flex-direction:column;
+gap:5px;
+background:none;
+border:none;
+cursor:pointer;
+}
+
+.hamburguesa span{
+width:25px;
+height:3px;
+background:white;
+transition:.3s;
+}
+
+/* animación X */
+
+.hamburguesa.activo span:nth-child(1){
+transform:rotate(45deg) translate(5px,5px);
+}
+
+.hamburguesa.activo span:nth-child(2){
+opacity:0;
+}
+
+.hamburguesa.activo span:nth-child(3){
+transform:rotate(-45deg) translate(6px,-6px);
+}
+
+/* móvil */
+
+@media(max-width:900px){
+
+.hamburguesa{
+display:flex;
+}
+
+.menu{
+position:absolute;
+top:100%;
+left:0;
+right:0;
+
+display:flex;
+flex-direction:column;
+text-align:center;
+
+background:#020617;
+
+max-height:0;
+overflow:hidden;
+transition:.4s;
+}
+
+.menu a{
+margin:10px 0;
+}
+
+.menu.activo{
+max-height:300px;
+}
+
+}
+
+:root{
+--bg:#0f172a;
+--card:#111827;
+--accent:#38bdf8;
+--text:#e5e7eb;
+--muted:#9ca3af;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:system-ui, Arial, sans-serif;
+}
+
+body{
+background:linear-gradient(180deg,#020617,#0f172a);
+color:var(--text);
+line-height:1.7;
+}
+
+/* HEADER */
+
+header{
+position:sticky;
+top:0;
+z-index:10;
+backdrop-filter: blur(10px);
+background:rgba(2,6,23,.7);
+border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+/* Animación del logo */
+
+header img{
+transition: transform .4s ease, filter .4s ease;
+}
+
+header img:hover{
+transform: scale(1.1) rotate(-3deg);
+filter: drop-shadow(0 0 10px #38bdf8);
+}
+
+.nav{
+max-width:1300px;
+margin:auto;
+padding:15px 20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-weight:800;
+letter-spacing:2px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.logo img{
+height:55px;
+}
+
+.menu a{
+margin-left:35px;
+text-decoration:none;
+color:var(--text);
+font-size:.95rem;
+}
+
+
+.menu a:hover{
+color:var(--accent);
+}
+
+/* HERO */
+
+.hero{
+max-width:1200px;
+margin:auto;
+padding:80px 20px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:50px;
+align-items:center;
+}
+
+.hero img{
+width:100%;
+border-radius:16px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+.hero h1{
+font-size:3rem;
+margin-bottom:20px;
+line-height:1.1;
+letter-spacing:1px;
+}
+
+.hero p{
+color:#cbd5f5;
+margin-bottom:10px;
+}
+
+/* SECCIONES */
+
+.section{
+max-width:900px;
+margin:auto;
+padding:20px 20px;
+}
+
+.section h2{
+font-size:2rem;
+margin-bottom:20px;
+color:#38bdf8;
+position:relative;
+}
+
+.section h2::after{
+content:"";
+display:block;
+width:0;
+height:3px;
+background:#38bdf8;
+margin-top:6px;
+transition:.5s;
+}
+
+.section:hover h2::after{
+width:60px;
+}
+
+.section p{
+margin-bottom:4px;
+color:#cbd5f5;
+}
+
+/* IMAGEN */
+
+.image-block{
+text-align:center;
+margin:30px 0;
+padding:10px;
+}
+
+.image-block img{
+border-radius:10px;
+transition: transform .4s ease, box-shadow .4s ease;
+}
+
+.image-block img:hover{
+transform:scale(1.05);
+box-shadow:0 0 10px rgba(56,189,248,0.8);
+}
+
+.image-block span{
+display:block;
+margin-top:10px;
+font-size:0.9rem;
+color:#94a3b8;
+}
+
+.img-pequena{
+width:350px;
+}
+
+.img-mediana{
+width:400px;
+}
+/* CITA */
+
+.cita{
+margin:60px auto;
+max-width:700px;
+font-style:italic;
+text-align:center;
+font-size:1.4rem;
+border-left:3px solid #38bdf8;
+padding:25px;
+background:rgba(255,255,255,0.03);
+border-radius:10px;
+}
+
+/* BOTON */
+
+.volver{
+display:inline-block;
+margin-top:40px;
+padding:12px 22px;
+background:#38bdf8;
+color:#020617;
+text-decoration:none;
+border-radius:10px;
+font-weight:600;
+}
+
+/* ANIMACIONES SCROLL */
+
+.reveal{
+opacity:0;
+transform:translateY(40px);
+transition:all .8s ease;
+}
+
+.reveal.visible{
+opacity:1;
+transform:translateY(0);
+}
+
+/* VISOR DE IMAGEN */
+
+#visorImagen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:1000;
+cursor:pointer;
+}
+
+#visorImagen img{
+max-width:90%;
+max-height:90%;
+border-radius:10px;
+box-shadow:0 0 40px rgba(56,189,248,0.6);
+}
+
+/* FOOTER */
+
+footer{
+  border-top:1px solid rgba(255,255,255,.05);
+  padding:25px;
+  text-align:center;
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+.hero{
+grid-template-columns:1fr;
+}
+
+.hero h1{
+font-size:2.2rem;
+}
+
+.img-pequena{
+max-width:100%;
+}
+
+.img-mediana{
+max-width:100%;
+}
+
+}
+
+/* FONDO ANIMADO */
+
+.fondo-animado{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+overflow:hidden;
+}
+
+/* gradiente animado */
+
+body{
+background:linear-gradient(270deg,#020617,#0f172a,#020617);
+background-size:400% 400%;
+animation:fondoMovimiento 18s ease infinite;
+}
+
+@keyframes fondoMovimiento{
+
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+
+}
+
+/* partículas */
+
+#particulas{
+position:absolute;
+width:100%;
+height:100%;
+}
+
+/* luces difusas */
+
+.luces::before,
+.luces::after{
+content:"";
+position:absolute;
+width:600px;
+height:600px;
+border-radius:50%;
+background:radial-gradient(circle,rgba(56,189,248,0.15),transparent 70%);
+filter:blur(80px);
+animation:moverLuces 20s linear infinite;
+}
+
+.luces::after{
+top:40%;
+left:60%;
+animation-duration:25s;
+}
+
+@keyframes moverLuces{
+
+0%{transform:translate(0,0);}
+50%{transform:translate(-100px,80px);}
+100%{transform:translate(0,0);}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="fondo-animado">
+<canvas id="particulas"></canvas>
+<div class="luces"></div>
+</div>
+
+<header>
+  <div class="nav">
+
+    <div class="logo">
+      <img src="img/logo.png" alt="Logo Biblioteca Dariana">
+      <span>Biblioteca Dariana</span>
+    </div>
+
+    <button class="hamburguesa" id="btnMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="menu">
+      <a href="index.html">Inicio</a>
+      <a href="biografia.html">Biografía</a>
+      <a href="obras.html">Obras</a>
+      <a href="index.html#mapa">Mapa</a>
+      <a href="quienes-somos.html">Conoce el proyecto</a>
+    </nav>
+
+  </div>
+</header>
+
+<div class="overlay-menu"></div>
+
+
+<section class="hero reveal">
+
+<div>
+
+<h1>Rubén Darío</h1>
+
+<p>
+Félix Rubén García Sarmiento, conocido universalmente como Rubén Darío, nació el 18 de enero de 1867 en Metapa, hoy conocida como Ciudad Darío, en Nicaragua.
+</p>
+
+<p>
+Fue poeta, periodista y diplomático, y es considerado el máximo representante del modernismo literario en lengua española. Su obra cambió profundamente la poesía hispana, introduciendo nuevas formas, ritmos, imágenes y una estética completamente renovadora.
+</p>
+
+<p>
+Rubén Darío no solo fue un gran escritor nicaragüense, sino también una figura central de la literatura universal.
+</p>
+
+</div>
+
+<img src="img/ruben.jpeg">
+
+</section>
+
+<section class="section reveal">
+
+<h2>Infancia y educación</h2>
+
+<p>
+Rubén Darío creció en un ambiente familiar complejo. Sus padres se separaron cuando él era muy pequeño, por lo que fue criado principalmente por sus tíos abuelos en la ciudad de León, Nicaragua.
+</p>
+
+<p>
+Desde temprana edad demostró una inteligencia y sensibilidad extraordinarias. A los doce años ya escribía poesía y era reconocido por su talento literario. Muchas personas lo llamaban “el poeta niño”.
+</p>
+
+<p>
+Durante su juventud tuvo acceso a numerosos libros de literatura española, francesa y latinoamericana, lo que influyó profundamente en su estilo.
+</p>
+
+<div class="image-block">
+<img src="img/primeros.jpg" class="img-mediana">
+<span>Rubén Darío durante su juventud</span>
+</div>
+
+</section>
+
+
+<section class="section reveal">
+
+<h2>Inicio de su carrera literaria</h2>
+
+<p>
+En su adolescencia Rubén Darío comenzó a publicar poemas en periódicos locales. Su talento llamó la atención de intelectuales y escritores de la época.
+</p>
+
+<p>
+En 1886 viajó a Chile, donde desarrolló gran parte de su carrera literaria temprana. Allí trabajó como periodista y publicó algunas de sus primeras obras importantes.
+</p>
+
+<p>
+Fue en Chile donde comenzó a consolidar su estilo literario innovador.
+</p>
+
+</section>
+
+<section class="section reveal">
+
+<h2>El nacimiento del modernismo</h2>
+
+<p>
+En 1888 publicó su famosa obra "Azul…", considerada el inicio del modernismo literario. Este movimiento buscaba renovar la poesía en lengua española mediante el uso de nuevos ritmos, musicalidad y simbolismo.
+</p>
+
+<p>
+El modernismo introdujo influencias de la literatura francesa, especialmente del simbolismo y el parnasianismo.
+</p>
+
+<p>
+Rubén Darío se convirtió rápidamente en el líder de este movimiento literario.
+</p>
+
+<div class="image-block">
+<img src="img/azul.jpg" class="img-mediana">
+<span>Portada histórica de "Azul..."</span>
+</div>
+
+</section>
+
+
+<div class="cita">
+“Si la patria es pequeña, uno grande la sueña.”
+</div>
+
+
+<section class="section reveal">
+
+<h2>Viajes y carrera diplomática</h2>
+
+<p>
+Rubén Darío vivió en varios países a lo largo de su vida. Residió en Chile, Argentina, España y Francia, entre otros lugares.
+</p>
+
+<p>
+También trabajó como diplomático representando a Nicaragua en diversas misiones internacionales.
+</p>
+
+<p>
+Durante sus viajes conoció a numerosos escritores, artistas e intelectuales, lo que enriqueció aún más su obra literaria.
+</p>
+
+<div class="image-block">
+
+<img src="img/viajes.jpg" class="img-pequena" alt="Rubén Darío viajo a diversas naciones">
+
+<span>Rubén Darío viajo a distintos paises a lo largo de su carrera</span>
+
+</div>
+
+</section>
+
+
+<section class="section reveal">
+
+<h2>Obras más importantes</h2>
+
+<p>
+Entre las obras más destacadas de Rubén Darío se encuentran:
+</p>
+
+<p>
+• Azul… (1888)  
+• Prosas profanas (1896)  
+• Cantos de vida y esperanza (1905)
+</p>
+
+<p>
+Estos libros consolidaron su reputación como uno de los más grandes poetas del mundo hispanohablante.
+</p>
+
+<div class="image-block">
+
+<img src="img/libros.png" class="img-pequena" alt="Rubén Darío libros">
+
+<span>Obras mas populares</span>
+
+</div>
+
+</section>
+
+
+<section class="section reveal">
+
+<h2>Últimos años</h2>
+
+<p>
+Durante los últimos años de su vida, Rubén Darío enfrentó problemas de salud y dificultades personales. A pesar de ello, continuó escribiendo y participando en la vida intelectual de su tiempo.
+</p>
+
+<p>
+Falleció el 6 de febrero de 1916 en León, Nicaragua.
+</p>
+
+<p>
+Su funeral fue uno de los más grandes en la historia del país, demostrando el enorme respeto y admiración que el pueblo nicaragüense sentía por él.
+</p>
+
+<div class="image-block">
+
+<img src="img/muerte.avif" class="img-pequena" alt="Rubén Darío muerte">
+
+<span>Monumento fúnebre en honor a Rubén Darío</span>
+
+</div>
+</section>
+
+
+<section class="section reveal">
+
+<h2>Legado cultural</h2>
+
+<p>
+El legado de Rubén Darío continúa vivo hasta nuestros días. Su influencia se puede ver en innumerables poetas y escritores del mundo hispanohablante.
+</p>
+
+<p>
+Es considerado un símbolo de la identidad cultural nicaragüense y una de las figuras más importantes de la literatura universal.
+</p>
+
+<p>
+Hoy en día su obra se estudia en escuelas, universidades y centros culturales de todo el mundo.
+</p>
+
+<a class="volver" href="index.html">← Volver al inicio</a>
+
+</section>
+
+<div id="visorImagen">
+<img id="imagenGrande">
+</div>
+
+<script>
+
+const elementos = document.querySelectorAll(".reveal");
+
+function mostrarElementos(){
+
+const alturaVentana = window.innerHeight;
+
+elementos.forEach(el => {
+
+const distancia = el.getBoundingClientRect().top;
+
+if(distancia < alturaVentana - 80){
+el.classList.add("visible");
+}
+
+});
+
+}
+
+window.addEventListener("scroll", mostrarElementos);
+
+mostrarElementos();
+
+</script>
+
+<script>
+
+const imagenes = document.querySelectorAll(".image-block img");
+const visor = document.getElementById("visorImagen");
+const imagenGrande = document.getElementById("imagenGrande");
+
+imagenes.forEach(img => {
+
+img.addEventListener("click", () => {
+
+visor.style.display="flex";
+imagenGrande.src = img.src;
+
+});
+
+});
+
+visor.addEventListener("click", () => {
+
+visor.style.display="none";
+
+});
+
+</script>
+
+<script>
+
+const btnMenu = document.getElementById("btnMenu");
+const menu = document.querySelector(".menu");
+
+btnMenu.addEventListener("click", () => {
+
+menu.classList.toggle("activo");
+btnMenu.classList.toggle("activo");
+
+});
+
+</script>
+
+
+<footer>
+© 2026 · Biblioteca Dariana · Proyecto académico · UNAN Managua
+</footer>
+
+<script>
+
+const canvas = document.getElementById("particulas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particulas = [];
+
+for(let i=0;i<70;i++){
+
+particulas.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+d:Math.random()*0.5
+});
+
+}
+
+function animar(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="rgba(148,163,184,0.3)";
+
+particulas.forEach(p=>{
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fill();
+
+p.y += p.d;
+
+if(p.y>canvas.height){
+p.y=0;
+p.x=Math.random()*canvas.width;
+}
+
+});
+
+requestAnimationFrame(animar);
+
+}
+
+animar();
+
+window.addEventListener("resize",()=>{
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+});
+
+</script>
+
+
+</body>
+</html>
